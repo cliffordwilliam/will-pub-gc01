@@ -1,5 +1,5 @@
 require("dotenv").config();
-
+const cors = require("cors");
 const { ApolloServer } = require("@apollo/server");
 const { startStandaloneServer } = require("@apollo/server/standalone");
 const PORT = process.env.PORT || 3000;
@@ -29,6 +29,16 @@ const server = new ApolloServer({
 (async () => {
   try {
     await mongoConnection.connect();
+
+    const corsOptions = {
+      origin: "*",
+      methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+      credentials: true,
+    };
+
+    server.applyMiddleware({
+      app: cors(corsOptions),
+    });
 
     const { url } = await startStandaloneServer(server, {
       listen: {
